@@ -4,7 +4,7 @@ export const billListData = {
             type: 'foods',
             name: 'Groceries',
             list: [
-                { type: 'food', name: 'Food' },
+                { type: 'food', name: 'Food'},
                 { type: 'drinks', name: 'Drinks' },
                 { type: 'dessert', name: 'Snacks' },
             ],
