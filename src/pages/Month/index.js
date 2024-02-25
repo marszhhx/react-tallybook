@@ -1,12 +1,13 @@
 import {NavBar, DatePicker} from 'antd-mobile'
 import './index.scss'
 import classnames from 'classnames'
-import {useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import dayjs from 'dayjs'
 import {useSelector} from 'react-redux'
 import _ from 'lodash'
 
 const Month = () => {
+
     const billList = useSelector(state => state.bill.billList)
 
     const monthGroup = useMemo(() => {
@@ -24,20 +25,36 @@ const Month = () => {
     const [currentMonthList, setCurrentMonthList] = useState([])
 
     const monthlySummary = useMemo(() => {
-        const totalExpense = currentMonthList
-            .filter(item => item.type === 'pay')
-            .reduce((a, c) => a + c.money, 0)
+        if (currentMonthList) {
+            const totalExpense = currentMonthList
+                .filter(item => item.type === 'pay')
+                .reduce((a, c) => a + c.money, 0)
 
-        const totalIncome = currentMonthList
-            .filter(item => item.type === 'income')
-            .reduce((a, c) => a + c.money, 0)
+            const totalIncome = currentMonthList
+                .filter(item => item.type === 'income')
+                .reduce((a, c) => a + c.money, 0)
 
+            return {
+                totalExpense,
+                totalIncome,
+                balance: totalExpense + totalIncome
+            }
+        }
         return {
-            totalExpense,
-            totalIncome,
-            balance: totalExpense + totalIncome
+            totalExpense: 0,
+            totalIncome: 0,
+            balance: 0
         }
     },[currentMonthList])
+
+    useEffect(() => {
+        const currentDateKey = dayjs(new Date()).format('YYYY-MM')
+        // get monthly bill state from month group
+        if (monthGroup[currentDateKey]) {
+            setCurrentMonthList(monthGroup[currentDateKey])
+        }
+    },[monthGroup])
+
 
     // Confirm call back
     const handleConfirm = (date) => {
@@ -45,7 +62,6 @@ const Month = () => {
         setCurrentDate(formatedDate)
         setDateVisible(false)
         setCurrentMonthList(monthGroup[formatedDate])
-        console.log(formatedDate, currentDate)
     }
 
     return (<div className="monthlyBill">
