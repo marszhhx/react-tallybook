@@ -20,16 +20,37 @@ const Month = () => {
     const [currentDate, setCurrentDate] = useState(()=> {
         return dayjs(new Date()).format('YYYY-MM')
     })
+
+    const [currentMonthList, setCurrentMonthList] = useState([])
+
+    const monthlySummary = useMemo(() => {
+        const totalExpense = currentMonthList
+            .filter(item => item.type === 'pay')
+            .reduce((a, c) => a + c.money, 0)
+
+        const totalIncome = currentMonthList
+            .filter(item => item.type === 'income')
+            .reduce((a, c) => a + c.money, 0)
+
+        return {
+            totalExpense,
+            totalIncome,
+            balance: totalExpense + totalIncome
+        }
+    },[currentMonthList])
+
+    // Confirm call back
     const handleConfirm = (date) => {
-        // console.log('onConfirm', date)
         const formatedDate = dayjs(date).format('YYYY-MM')
         setCurrentDate(formatedDate)
         setDateVisible(false)
+        setCurrentMonthList(monthGroup[formatedDate])
+        console.log(formatedDate, currentDate)
     }
 
     return (<div className="monthlyBill">
         <NavBar className="nav" backArrow={false}>
-            Monthly Income and Expenses
+            Monthly Income and Expense
         </NavBar>
         <div className="content">
             <div className="header">
@@ -38,22 +59,21 @@ const Month = () => {
                     <span className="text">
                       {currentDate + ''} Bill
                     </span>
-
                     {/*{Control the presence of the expand class name based on the state of current dialog box}*/}
                     <span className={classnames('arrow', !dateVisible && 'expand')}></span>
                 </div>
                 {/* Statistics Area */}
                 <div className='twoLineOverview'>
                     <div className="item">
-                        <span className="money">{100}</span>
-                        <span className="type">Expenses</span>
+                        <span className="money">{monthlySummary.totalExpense.toFixed(2)}</span>
+                        <span className="type">Expense</span>
                     </div>
                     <div className="item">
-                        <span className="money">{200}</span>
+                        <span className="money">{monthlySummary.totalIncome.toFixed(2)}</span>
                         <span className="type">Income</span>
                     </div>
                     <div className="item">
-                        <span className="money">{200}</span>
+                        <span className="money">{monthlySummary.balance.toFixed(2)}</span>
                         <span className="type">Balance</span>
                     </div>
                 </div>
