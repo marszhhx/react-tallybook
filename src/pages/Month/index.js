@@ -5,6 +5,7 @@ import {useEffect, useMemo, useState} from "react";
 import dayjs from 'dayjs'
 import {useSelector} from 'react-redux'
 import _ from 'lodash'
+import DailyBill from "@/pages/Month/components/DailyBill";
 
 const Month = () => {
 
@@ -24,7 +25,21 @@ const Month = () => {
 
     const [currentMonthList, setCurrentMonthList] = useState([])
 
+    // 当前页数据 currentMonthList，分组useMemo
+    const dayGroup = useMemo(() => {
+        console.log(currentMonthList)
+        const groupData = _.groupBy(currentMonthList, item => dayjs(item.date).format('YYYY-MM-DD'))
+        const keys = Object.keys(groupData)
+        return {
+            groupData,
+            keys
+        }
+    }, [currentMonthList])
+
+    console.log(dayGroup)
+
     const monthlySummary = useMemo(() => {
+        // if currentMonthList has data
         if (currentMonthList) {
             const totalExpense = currentMonthList
                 .filter(item => item.type === 'pay')
@@ -40,6 +55,7 @@ const Month = () => {
                 balance: totalExpense + totalIncome
             }
         }
+        // if currentMonthList === undefined
         return {
             totalExpense: 0,
             totalIncome: 0,
@@ -76,7 +92,7 @@ const Month = () => {
                       {currentDate + ''} Bill
                     </span>
                     {/*{Control the presence of the expand class name based on the state of current dialog box}*/}
-                    <span className={classnames('arrow', !dateVisible && 'expand')}></span>
+                    <span className={classnames('arrow', dateVisible && 'expand')}></span>
                 </div>
                 {/* Statistics Area */}
                 <div className='twoLineOverview'>
@@ -105,6 +121,12 @@ const Month = () => {
                     onClose={() => setDateVisible(false)}
                 />
             </div>
+            <div>
+                {dayGroup.keys.map(key => {
+                    return <DailyBill key={key} date={key} billList={dayGroup.groupData[key]}/>
+                })}
+            </div>
+
         </div>
     </div>)
 }
