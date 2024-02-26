@@ -5,39 +5,41 @@ import classNames from 'classnames'
 import { billListData } from '@/contents'
 import { useNavigate } from 'react-router-dom'
 import {useState} from "react";
+import { addToBillList} from "@/store/modules/billStore";
+import {useDispatch} from "react-redux";
 
 const New = () => {
+    // collect category
     const [category, setCategory] = useState('pay')
 
-    const renderBillListData = (category) => {
-        const data = billListData[category]
-        return data.map(item => {
-            return (
-                <div className="kaType" key={item.type}>
-                    <div className="title">{item.name}</div>
-                    <div className="list">
-                        {item.list.map(item => {
-                            return (
-                                <div
-                                    className={classNames(
-                                        'item',
-                                        ''
-                                    )}
-                                    key={item.type}
+    // collect amount
+    const [money, setMoney] = useState(0)
 
-                                >
-                                    <div className="icon">
-                                        <Icon type={item.type}/>
-                                    </div>
-                                    <div className="text">{item.name}</div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
-            )
-        })
+    // collect useFor
+    const [useFor, setUseFor] = useState('')
+
+    const moneyChange = (value) => {
+        setMoney(value)
     }
+
+    const dispatch = useDispatch()
+
+    // Submit bill
+    const submitBill = () => {
+        // 1. collect bill data
+        const data = {
+            type: category,
+            money: category === 'pay' ? -money : +money,
+            date: new Date(),
+            useFor: useFor
+        }
+
+        console.log(data)
+
+        // 2. trigger submit action
+        dispatch(addToBillList(data))
+    }
+
 
     const navigate = useNavigate()
     return (
@@ -80,6 +82,8 @@ const New = () => {
                                 className="input"
                                 placeholder="0.00"
                                 type="number"
+                                value={money}
+                                onChange={moneyChange}
                             />
                             <span className="iconYuan">¥</span>
                         </div>
@@ -88,12 +92,38 @@ const New = () => {
             </div>
 
             <div className="kaTypeList">
-                {renderBillListData(category)}
+                {billListData[category].map(item => {
+                    return (
+                        <div className="kaType" key={item.type}>
+                            <div className="title">{item.name}</div>
+                            <div className="list">
+                                {item.list.map(item => {
+                                    return (
+                                        <div
+                                            className={classNames(
+                                                'item',
+                                                item.type === useFor && 'selected'
+                                            )}
+                                            key={item.type}
+                                            onClick={() => setUseFor(item.type)}
+
+                                        >
+                                            <div className="icon">
+                                                <Icon type={item.type}/>
+                                            </div>
+                                            <div className="text">{item.name}</div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )
+                })}
             </div>
 
             <div className="btns">
-                <Button className="btn save">
-                    Save
+                <Button className="btn save" onClick={submitBill}>
+                    Submit
                 </Button>
             </div>
         </div>
