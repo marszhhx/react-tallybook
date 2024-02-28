@@ -1,5 +1,4 @@
 // configure slices, export store instance
-
 import billReducer from './modules/billStore'
 import {configureStore} from '@reduxjs/toolkit'
 

@@ -1,12 +1,13 @@
-import { Button, DatePicker, Input, NavBar } from 'antd-mobile'
+import {Button, DatePicker, Input, NavBar} from 'antd-mobile'
 import Icon from '@/components/Icon'
 import './index.scss'
 import classNames from 'classnames'
-import { billListData } from '@/contents'
-import { useNavigate } from 'react-router-dom'
+import {billListData} from '@/contents'
+import {useNavigate} from 'react-router-dom'
 import {useState} from "react";
-import { addToBillList} from "@/store/modules/billStore";
+import {addToBillList} from "@/store/modules/billStore";
 import {useDispatch} from "react-redux";
+import dayjs from "dayjs";
 
 const New = () => {
     // collect category
@@ -17,6 +18,12 @@ const New = () => {
 
     // collect useFor
     const [useFor, setUseFor] = useState('')
+
+    // date Visible
+    const [dateVisible, setDateVisible] = useState(false)
+
+    const [date, setDate] = useState(new Date())
+
 
     const moneyChange = (value) => {
         setMoney(value)
@@ -30,7 +37,7 @@ const New = () => {
         const data = {
             type: category,
             money: category === 'pay' ? -money : +money,
-            date: new Date(),
+            date: date,
             useFor: useFor
         }
 
@@ -38,10 +45,20 @@ const New = () => {
 
         // 2. trigger submit action
         dispatch(addToBillList(data))
+
+        // 3. navigate to previous page
+
+        navigate(-1)
+    }
+    const navigate = useNavigate()
+
+    const dateConfirm = (date) => {
+        // console.log(date)
+        setDate(date)
+        setDateVisible(false)
     }
 
 
-    const navigate = useNavigate()
     return (
         <div className="keepAccounts">
             <NavBar className="nav" onBack={() => navigate(-1)}>
@@ -53,14 +70,14 @@ const New = () => {
                     <Button
                         shape="rounded"
                         className={classNames(category === 'pay' && 'selected')}
-                        onClick = {() => setCategory('pay')}
+                        onClick={() => setCategory('pay')}
                     >
                         Expense
                     </Button>
                     <Button
                         className={classNames(category === 'income' && 'selected')}
                         shape="rounded"
-                        onClick = {() => setCategory('income')}
+                        onClick={() => setCategory('income')}
                     >
                         Income
                     </Button>
@@ -69,12 +86,15 @@ const New = () => {
                 <div className="kaFormWrapper">
                     <div className="kaForm">
                         <div className="date">
-                            <Icon type="calendar" className="icon" />
-                            <span className="text">{'Today'}</span>
+                            <Icon type="calendar" className="icon"/>
+                            <span className="text" onClick={() => setDateVisible(true)}
+                            >{dayjs(date).format("YYYY-MM-DD")}</span>
                             <DatePicker
                                 className="kaDate"
                                 title="记账日期"
                                 max={new Date()}
+                                visible={dateVisible}
+                                onConfirm={dateConfirm}
                             />
                         </div>
                         <div className="kaInput">

@@ -146,6 +146,62 @@
       "money": 10,
       "date": "2024-02-26T00:19:47.729Z",
       "useFor": "overtimepay"
+    },
+    {
+      "id": "f951",
+      "type": "pay",
+      "money": -100,
+      "date": "2024-02-23T08:00:00.000Z",
+      "useFor": "food"
+    },
+    {
+      "id": "ee7c",
+      "type": "income",
+      "money": 10000,
+      "date": "2024-01-23T08:00:00.000Z",
+      "useFor": "bonus"
+    },
+    {
+      "id": "9583",
+      "type": "income",
+      "money": 10000,
+      "date": "2024-02-25T08:00:00.000Z",
+      "useFor": "bonus"
+    },
+    {
+      "id": "4cd4",
+      "type": "pay",
+      "money": -10000,
+      "date": "2024-02-22T08:00:00.000Z",
+      "useFor": ""
+    },
+    {
+      "id": "6a46",
+      "type": "income",
+      "money": 10000,
+      "date": "2024-02-22T08:00:00.000Z",
+      "useFor": "cashgift"
+    },
+    {
+      "id": "45aa",
+      "type": "pay",
+      "money": -10,
+      "date": "2024-02-26T00:36:00.805Z",
+      "useFor": "drinks"
+    },
+    {
+      "id": "1def",
+      "type": "pay",
+      "money": -10,
+      "date": "2024-02-26T00:36:00.805Z",
+      "useFor": "drinks"
+    },
+    {
+      "id": "e7e6",
+      "type": "pay",
+      "money": -20,
+      "date": "2024-02-26T00:37:06.998Z",
+      "useFor": "game"
     }
   ]
 }
